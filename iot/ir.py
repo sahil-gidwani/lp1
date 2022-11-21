@@ -1,3 +1,7 @@
+# VCC (5V) - 2
+# GND (GD) - 6
+# DO - 3
+
 import RPI.GPIO as GPIO
 from time import sleep
 
