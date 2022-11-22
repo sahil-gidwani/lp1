@@ -3,8 +3,7 @@ import java.io.IOException;
 public class fcfs {
 
     // Function to find the waiting time for all processes
-    static void findWaitingTime(int processes[], int n,
-            int bt[], int wt[]) {
+    static void findWaitingTime(int processes[], int n, int bt[], int wt[]) {
         // waiting time for first process is 0
         wt[0] = 0;
 
@@ -15,8 +14,7 @@ public class fcfs {
     }
 
     // Function to calculate turn around time
-    static void findTurnAroundTime(int processes[], int n,
-            int bt[], int wt[], int tat[]) {
+    static void findTurnAroundTime(int processes[], int n, int bt[], int wt[], int tat[]) {
         // calculating turnaround time by adding bt[i] + wt[i]
         for (int i = 0; i < n; i++) {
             tat[i] = bt[i] + wt[i];
@@ -35,8 +33,7 @@ public class fcfs {
         findTurnAroundTime(processes, n, bt, wt, tat);
 
         // Display processes along with all details
-        System.out.printf("Processes Burst time Waiting"
-                + " time Turn around time\n");
+        System.out.printf("Processes Burst time Waiting" + " time Turn around time\n");
 
         // Calculate total waiting time and total turn around time
         for (int i = 0; i < n; i++) {
