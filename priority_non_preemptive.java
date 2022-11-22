@@ -18,9 +18,8 @@ class Process {
 
 public class priority_non_preemptive {
 
-    // Function to find the waiting time for all
-    // processes
-    public void findWaitingTime(Process proc[], int n, int wt[]) {
+    // Function to find the waiting time for all processes
+    static void findWaitingTime(Process proc[], int n, int wt[]) {
 
         // waiting time for first process is 0
         wt[0] = 0;
@@ -31,16 +30,15 @@ public class priority_non_preemptive {
     }
 
     // Function to calculate turn around time
-    public void findTurnAroundTime(Process proc[], int n,
+    static void findTurnAroundTime(Process proc[], int n,
             int wt[], int tat[]) {
-        // calculating turnaround time by adding
-        // bt[i] + wt[i]
+        // calculating turnaround time by adding bt[i] + wt[i]
         for (int i = 0; i < n; i++)
             tat[i] = proc[i].bt + wt[i];
     }
 
     // Function to calculate average time
-    public void findavgTime(Process proc[], int n) {
+    static void findavgTime(Process proc[], int n) {
         int wt[] = new int[n], tat[] = new int[n], total_wt = 0, total_tat = 0;
 
         // Function to find waiting time of all processes
@@ -52,20 +50,18 @@ public class priority_non_preemptive {
         // Display processes along with all details
         System.out.print("\nProcesses Burst time Waiting time Turn around time\n");
 
-        // Calculate total waiting time and total turn
-        // around time
+        // Calculate total waiting time and total turn around time
         for (int i = 0; i < n; i++) {
             total_wt = total_wt + wt[i];
             total_tat = total_tat + tat[i];
             System.out.print(" " + proc[i].pid + "\t\t" + proc[i].bt + "\t " + wt[i] + "\t\t " + tat[i] + "\n");
         }
 
-        System.out.print("\nAverage waiting time = "
-                + (float) total_wt / (float) n);
+        System.out.print("\nAverage waiting time = " + (float) total_wt / (float) n);
         System.out.print("\nAverage turn around time = " + (float) total_tat / (float) n);
     }
 
-    public void priorityScheduling(Process proc[], int n) {
+    static void priorityScheduling(Process proc[], int n) {
 
         // Sort processes by priority
         Arrays.sort(proc, new Comparator<Process>() {
@@ -82,12 +78,12 @@ public class priority_non_preemptive {
     }
 
     public static void main(String[] args) {
-        priority_non_preemptive ob = new priority_non_preemptive();
         int n = 3;
         Process proc[] = new Process[n];
         proc[0] = new Process(1, 10, 2);
         proc[1] = new Process(2, 5, 0);
         proc[2] = new Process(3, 8, 1);
-        ob.priorityScheduling(proc, n);
+
+        priorityScheduling(proc, n);
     }
 }
