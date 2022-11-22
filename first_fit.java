@@ -8,8 +8,8 @@ public class first_fit {
         for (int i = 0; i < allocation.length; i++)
             allocation[i] = -1;
 
-        // pick each process and find suitable blocks according to its size ad assign to
-        // it
+        // pick each process and find suitable blocks according to its size and assign
+        // to it
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 if (blockSize[j] >= processSize[i]) {
@@ -26,8 +26,7 @@ public class first_fit {
 
         System.out.println("\nProcess No.\tProcess Size\tBlock no.");
         for (int i = 0; i < n; i++) {
-            System.out.print(" " + (i + 1) + "\t\t" +
-                    processSize[i] + "\t\t");
+            System.out.print(" " + (i + 1) + "\t\t" + processSize[i] + "\t\t");
             if (allocation[i] != -1)
                 System.out.print(allocation[i] + 1);
             else
