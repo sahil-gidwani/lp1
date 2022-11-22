@@ -8,8 +8,8 @@ public class best_fit {
         for (int i = 0; i < allocation.length; i++)
             allocation[i] = -1;
 
-        // pick each process and find suitable blocks according to its size ad assign to
-        // it
+        // pick each process and find suitable blocks according to its size and assign
+        // to it
         for (int i = 0; i < n; i++) {
             // Find the best fit block for current process
             int bestIdx = -1;
