@@ -9,8 +9,8 @@ public class next_fit {
         // Initially no block is assigned to any process
         Arrays.fill(allocation, -1);
 
-        // pick each process and find suitable blocks according to its size ad assign to
-        // it
+        // pick each process and find suitable blocks according to its size and assign
+        // to it
         for (int i = 0; i < n; i++) {
             int count = 0;
 
@@ -34,13 +34,13 @@ public class next_fit {
                 // mod m will help in traversing the blocks from starting block after we reach
                 // the end.
                 j = (j + 1) % m;
+
             }
         }
 
         System.out.print("\nProcess No.\tProcess Size\tBlock no.\n");
         for (int i = 0; i < n; i++) {
-            System.out.print(i + 1 + "\t\t" + processSize[i]
-                    + "\t\t");
+            System.out.print(i + 1 + "\t\t" + processSize[i] + "\t\t");
             if (allocation[i] != -1) {
                 System.out.print(allocation[i] + 1);
             } else {
