@@ -4,7 +4,7 @@ public class next_fit {
     // Function to allocate memory to blocks as per Next fit algorithm
     static void NextFit(int blockSize[], int m, int processSize[], int n) {
         // Stores block id of the block allocated to a process
-        int allocation[] = new int[n], j = 0, count = 0;
+        int allocation[] = new int[n], j = 0;
 
         // Initially no block is assigned to any process
         Arrays.fill(allocation, -1);
@@ -12,8 +12,13 @@ public class next_fit {
         // pick each process and find suitable blocks according to its size ad assign to
         // it
         for (int i = 0; i < n; i++) {
+            int count = 0;
 
-            while (count <= m) {
+            while (count < m) {
+                // makes sure that for every process we traverse through entire array maximum
+                // once only.This avoids the problem of going into infinite loop if memory is
+                // not available
+                count++;
 
                 if (blockSize[j] >= processSize[i]) {
 
@@ -29,11 +34,6 @@ public class next_fit {
                 // mod m will help in traversing the blocks from starting block after we reach
                 // the end.
                 j = (j + 1) % m;
-
-                // makes sure that for every process we traverse through entire array maximum
-                // once only.This avoids the problem of going into infinite loop if memory is
-                // not available
-                count++;
             }
         }
 
