@@ -18,8 +18,7 @@ public class locker {
             try {
 
                 System.out.println(name + " : acquiring lock...");
-                System.out.println(name + " : available Semaphore permits now: "
-                        + semaphore.availablePermits());
+                System.out.println(name + " : available Semaphore permits now: " + semaphore.availablePermits());
 
                 semaphore.acquire();
                 System.out.println(name + " : got the permit!");
@@ -28,8 +27,7 @@ public class locker {
 
                     for (int i = 1; i <= 5; i++) {
 
-                        System.out.println(name + " : is performing operation " + i
-                                + ", available Semaphore permits : "
+                        System.out.println(name + " : is performing operation " + i + ", available Semaphore permits : "
                                 + semaphore.availablePermits());
 
                         // sleep 1 second
@@ -42,8 +40,7 @@ public class locker {
                     // calling release() after a successful acquire()
                     System.out.println(name + " : releasing lock...");
                     semaphore.release();
-                    System.out.println(name + " : available Semaphore permits now: "
-                            + semaphore.availablePermits());
+                    System.out.println(name + " : available Semaphore permits now: " + semaphore.availablePermits());
 
                 }
 
@@ -59,8 +56,7 @@ public class locker {
 
     public static void main(String[] args) {
 
-        System.out.println("Total available Semaphore permits : "
-                + semaphore.availablePermits());
+        System.out.println("Total available Semaphore permits : " + semaphore.availablePermits());
 
         MyLockerThread t1 = new MyLockerThread("A");
         t1.start();
