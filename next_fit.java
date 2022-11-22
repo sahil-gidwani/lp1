@@ -14,9 +14,6 @@ public class next_fit {
         for (int i = 0; i < n; i++) {
 
             while (count <= m) {
-                // makes sure that for every process we traverse through entire array maximum
-                // once only.This avoids the problem of going into infinite loop if memory is
-                // not available
 
                 if (blockSize[j] >= processSize[i]) {
 
@@ -33,6 +30,9 @@ public class next_fit {
                 // the end.
                 j = (j + 1) % m;
 
+                // makes sure that for every process we traverse through entire array maximum
+                // once only.This avoids the problem of going into infinite loop if memory is
+                // not available
                 count++;
             }
         }
