@@ -1,142 +1,152 @@
 import java.util.*;
 
+class Process {
+    int processID;
+    int arrivalTime;
+    int burstTime;
+
+    Process(int processID, int arrivalTime, int burstTime) {
+        this.processID = processID;
+        this.arrivalTime = arrivalTime;
+        this.burstTime = burstTime;
+    }
+}
+
 public class round_robin {
-    private static Scanner inp = new Scanner(System.in);
 
-    public static void main(String[] args) {
-        int n, tq, timer = 0, maxProccessIndex = 0;
-        float avgWait = 0, avgTT = 0;
-        System.out.print("\nEnter the time quanta : ");
-        tq = inp.nextInt();
-        System.out.print("\nEnter the number of processes : ");
-        n = inp.nextInt();
-        int arrival[] = new int[n];
-        int burst[] = new int[n];
-        int wait[] = new int[n];
-        int turn[] = new int[n];
-        int queue[] = new int[n];
-        int temp_burst[] = new int[n];
-        boolean complete[] = new boolean[n];
+    public static void findWatingTime(Process proc[], int noofProcesses, int watingTime[], int turnAroundTime[]) {
+        for (int i = 0; i < noofProcesses; i++) {
+            watingTime[i] = turnAroundTime[i] - proc[i].burstTime;
+        }
+    }
 
-        System.out.print("\nEnter the arrival time of the processes : ");
-        for (int i = 0; i < n; i++)
-            arrival[i] = inp.nextInt();
+    public static void findTurnaroundTime(Process proc[], int noofProcesses, int turnAroundTime[],
+            int completionTime[]) {
+        for (int i = 0; i < noofProcesses; i++) {
+            turnAroundTime[i] = completionTime[i] - proc[i].arrivalTime;
+        }
+    }
 
-        System.out.print("\nEnter the burst time of the processes : ");
-        for (int i = 0; i < n; i++) {
-            burst[i] = inp.nextInt();
-            temp_burst[i] = burst[i];
+    public static void findCompletionTime(Process proc[], int noofProcesses, int completionTime[], int tq) {
+        int remainingbursTime[] = new int[noofProcesses];
+        int tempArrivalTime[] = new int[noofProcesses];
+
+        ArrayList<Integer> readyQueue = new ArrayList<Integer>(200);
+        // ASSUME PROCESS ARE SORTED ACCORDING TO ARRIVAL TIME (IF NOT ADD A SORT
+        // FUNCTION)
+        readyQueue.add(0);
+
+        for (int i = 0; i < noofProcesses; i++) {
+            remainingbursTime[i] = proc[i].burstTime;
+            tempArrivalTime[i] = proc[i].arrivalTime;
         }
 
-        for (int i = 0; i < n; i++) { // Initializing the queue and complete array
-            complete[i] = false;
-            queue[i] = 0;
-        }
-        while (timer < arrival[0]) // Incrementing Timer until the first process arrives
-            timer++;
-        queue[0] = 1;
+        int counter = 0;
 
         while (true) {
-            boolean flag = true;
-            for (int i = 0; i < n; i++) {
-                if (temp_burst[i] != 0) {
-                    flag = false;
-                    break;
-                }
-            }
-            if (flag)
-                break;
+            boolean done = true;
 
-            for (int i = 0; (i < n) && (queue[i] != 0); i++) {
-                int ctr = 0;
-                while ((ctr < tq) && (temp_burst[queue[0] - 1] > 0)) {
-                    temp_burst[queue[0] - 1] -= 1;
-                    timer += 1;
-                    ctr++;
+            // SELECT PROCESS
+            for (int j = 0; j < readyQueue.size(); j++) {
 
-                    // Updating the ready queue until all the processes arrive
-                    checkNewArrival(timer, arrival, n, maxProccessIndex, queue);
-                }
-                if ((temp_burst[queue[0] - 1] == 0) && (complete[queue[0] - 1] == false)) {
-                    turn[queue[0] - 1] = timer; // turn currently stores exit times
-                    complete[queue[0] - 1] = true;
-                }
+                int i = readyQueue.get(j);
 
-                // checks whether or not CPU is idle
-                boolean idle = true;
-                if (queue[n - 1] == 0) {
-                    for (int k = 0; k < n && queue[k] != 0; k++) {
-                        if (complete[queue[k] - 1] == false) {
-                            idle = false;
+                if (remainingbursTime[i] > 0) {
+
+                    done = false;
+
+                    if (remainingbursTime[i] == 0) {
+                        counter++;
+                        continue;
+                    }
+
+                    if (remainingbursTime[i] > tq) {
+                        counter = counter + tq;
+
+                        // INSERT ARRIVED PROCESS IN READY_QUEUE
+                        for (int k = 1; k < noofProcesses; k++) {
+                            if (tempArrivalTime[k] <= counter) {
+                                readyQueue.add(k);
+                                // ONCE THE PROCESS IS ARRIVED MARK IT WITH MAX INTEGER VALUE SO IT DOES GO IN
+                                // THE READY QUEUE AGAIN
+                                tempArrivalTime[k] = Integer.MAX_VALUE;
+                            }
                         }
+
+                        remainingbursTime[i] = remainingbursTime[i] - tq;
+                        // ADD INCOMPLETE PROCESS IN READY_QUEUE
+                        readyQueue.add(i);
+                    } else {
+                        counter = counter + remainingbursTime[i];
+                        completionTime[i] = counter;
+                        remainingbursTime[i] = 0;
+
                     }
-                } else
-                    idle = false;
-
-                if (idle) {
-                    timer++;
-                    checkNewArrival(timer, arrival, n, maxProccessIndex, queue);
                 }
-
-                // Maintaining the entries of processes after each premption in the ready Queue
-                queueMaintainence(queue, n);
             }
-        }
 
-        for (int i = 0; i < n; i++) {
-            turn[i] = turn[i] - arrival[i];
-            wait[i] = turn[i] - burst[i];
-        }
-
-        System.out.print("\nProgram No.\tArrival Time\tBurst Time\tWait Time\tTurnAround Time"
-                + "\n");
-        for (int i = 0; i < n; i++) {
-            System.out.print(i + 1 + "\t\t" + arrival[i] + "\t\t" + burst[i]
-                    + "\t\t" + wait[i] + "\t\t" + turn[i] + "\n");
-        }
-        for (int i = 0; i < n; i++) {
-            avgWait += wait[i];
-            avgTT += turn[i];
-        }
-        System.out.print("\nAverage wait time : " + (avgWait / n)
-                + "\nAverage Turn Around Time : " + (avgTT / n));
-    }
-
-    public static void queueUpdation(int queue[], int timer, int arrival[], int n, int maxProccessIndex) {
-        int zeroIndex = -1;
-        for (int i = 0; i < n; i++) {
-            if (queue[i] == 0) {
-                zeroIndex = i;
+            if (done == true) {
                 break;
             }
         }
-        if (zeroIndex == -1)
-            return;
-        queue[zeroIndex] = maxProccessIndex + 1;
+
+        // DISPLAYING THE READY QUEUE
+        System.out.print("\nReady Queue: ");
+        System.out.print("[");
+        for (int i = 0; i < readyQueue.size(); i++) {
+            System.out.print("Process" + (readyQueue.get(i) + 1) + ", ");
+        }
+        System.out.println("]");
+
     }
 
-    public static void checkNewArrival(int timer, int arrival[], int n, int maxProccessIndex, int queue[]) {
-        if (timer <= arrival[n - 1]) {
-            boolean newArrival = false;
-            for (int j = (maxProccessIndex + 1); j < n; j++) {
-                if (arrival[j] <= timer) {
-                    if (maxProccessIndex < j) {
-                        maxProccessIndex = j;
-                        newArrival = true;
-                    }
-                }
-            }
-            if (newArrival) // adds the index of the arriving process(if any)
-                queueUpdation(queue, timer, arrival, n, maxProccessIndex);
+    public static void findAverage(Process proc[], int noofProcesses, int tq) {
+        int completionTime[] = new int[noofProcesses];
+        int watingTime[] = new int[noofProcesses];
+        int turnAroundTime[] = new int[noofProcesses];
+        int average_WT = 0, average_TT = 0;
+
+        findCompletionTime(proc, noofProcesses, completionTime, tq);
+
+        findTurnaroundTime(proc, noofProcesses, turnAroundTime, completionTime);
+
+        findWatingTime(proc, noofProcesses, watingTime, turnAroundTime);
+
+        // DISPLAY TABLE
+        System.out.println("-----------------------------");
+        System.out.println("Total number of processes: " + noofProcesses);
+        System.out.println("-----------------------------");
+        System.out.println(
+                "Process SR. \t Arrival Time \t Burst Time \t Completion Time \t Turnaround Time \t Wating Time");
+        System.out.println(
+                "--------------------------------------------------------------------------------------------------------------");
+        for (int i = 0; i < noofProcesses; i++) {
+            average_TT = average_TT + turnAroundTime[i];
+            average_WT = average_WT + watingTime[i];
+            System.out
+                    .println("Process " + proc[i].processID + "\t\t" + proc[i].arrivalTime + "\t\t" + proc[i].burstTime
+                            + "\t\t" + completionTime[i] + "\t\t\t" + turnAroundTime[i] + "\t\t\t" + watingTime[i]);
+
         }
+        System.out.println(
+                "--------------------------------------------------------------------------------------------------------------");
+        // DISPLAY AVERAGE TURNAROUND AND WATING TIME
+
+        System.out.println("AVERAGE WATING TIME: " + (average_WT / (float) noofProcesses) + " units");
+        System.out.println("AVERAGE TURNAROUND TIME: " + (average_TT / (float) noofProcesses) + " units");
     }
 
-    public static void queueMaintainence(int queue[], int n) {
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
 
-        for (int i = 0; (i < n - 1) && (queue[i + 1] != 0); i++) {
-            int temp = queue[i];
-            queue[i] = queue[i + 1];
-            queue[i + 1] = temp;
-        }
+        Process proc[] = { new Process(1, 0, 5), new Process(2, 1, 4), new Process(3, 2, 2), new Process(4, 3, 1) };
+
+        // ENTER THE TIME QUANTUM
+        System.out.print("Enter the Time Quantum: ");
+        int tq = scan.nextInt();
+
+        findAverage(proc, proc.length, tq);
+
+        scan.close();
     }
 }
