@@ -1,5 +1,5 @@
 # VCC (left) - 1
-# OUT (2nd from left) - 21
+# OUT (2nd from left) - 40 (on board corresponds to 21GPIO)
 # NC - skip
 # GND - 39
 
